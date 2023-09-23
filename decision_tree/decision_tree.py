@@ -55,13 +55,15 @@ class Node:
 
 class DecisionTree:
 
-    def __init__(self, default=None):
+    def __init__(self, default=None, max_depth=None, min_samples_leaf=1):
         # NOTE: Feel free add any hyperparameters 
         # (with defaults) as you see fit
         self.tree: Node | None = None
         self.default = default
+        self.max_depth = max_depth
+        self.min_samples_leaf = min_samples_leaf
 
-    def id3(self, X, y, attributes):
+    def id3(self, X, y, attributes, depth=0):
         """
         ID3 algorithm
 
@@ -83,8 +85,8 @@ class DecisionTree:
             tree.value = y.iloc[0]
             return tree
 
-        # If attributes is empty, return the root node with majority class
-        if len(attributes) == 0:
+        # If attributes is empty or max depth is reached, return the root node with majority class
+        if len(attributes) == 0 or (self.max_depth and depth >= self.max_depth or len(X) < self.min_samples_leaf):
             tree.value = y.value_counts().idxmax()
             return tree
 
@@ -105,7 +107,7 @@ class DecisionTree:
                 attributes_subset.remove(best_attr)
 
                 # Recursively build tree
-                tmp = self.id3(X_subset, y_subset, attributes_subset)
+                tmp = self.id3(X_subset, y_subset, attributes_subset, depth + 1)
                 if tmp.value is not None:
                     tree.children[-1].add_child(tmp)
                 else:
