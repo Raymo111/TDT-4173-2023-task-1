@@ -22,18 +22,17 @@ class KMeans:
             X (array<m,n>): a matrix of floats with
                 m rows (#samples) and n columns (#features)
         """
-        n_samples = X.shape[0]  # of samples
-
         a = X.to_numpy()
 
         # Initialize centroids - spread out
-        centroid_indices = np.random.choice(n_samples, 1, replace=False)
+        # Sort points by distance to all other points
+        centroid_indices = np.argsort(np.sum(cross_euclidean_distance(a), axis=1))
+
+        # Get first centroid - point furthest from all other points
         self.centroids = [a[centroid_indices[0]]]
-        for _ in range(self.k - 1):
+        for _ in range(self.k - 1):  # Get remaining centroids
             distances = np.min([euclidean_distance(a, c) for c in self.centroids], axis=0)
-            probabilities = distances / np.sum(distances)
-            new_centroid_index = np.random.choice(n_samples, p=probabilities)
-            self.centroids.append(a[new_centroid_index])
+            self.centroids.append(a[np.argmax(distances)])
         self.centroids = np.array(self.centroids)
 
         # Init assign points to clusters
