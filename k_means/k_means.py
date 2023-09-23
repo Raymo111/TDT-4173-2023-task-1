@@ -150,7 +150,7 @@ def euclidean_distortion(X, z):
     for i, c in enumerate(clusters):
         Xc = X[z == c]
         mu = Xc.mean(axis=0)
-        distortion += ((Xc - mu) ** 2).sum(axis=1)
+        distortion += ((Xc - mu) ** 2).sum()
 
     return distortion
 
