@@ -73,6 +73,7 @@ class DecisionTree:
                 to the features.
             y (pd.Series): a vector of discrete ground-truth labels
             attributes (list<str>): a list of all attributes
+            depth (int): current depth of the tree
 
         Returns:
             A decision tree
@@ -201,6 +202,7 @@ class DecisionTree:
             attr1=val1 ^ attr2=val2 ^ ... => label
         
         Example output:
+        >>> model = DecisionTree()
         >>> model.get_rules()
         [
             ([('Outlook', 'Overcast')], 'Yes'),
