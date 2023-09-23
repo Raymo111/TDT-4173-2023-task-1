@@ -8,10 +8,11 @@ import pandas as pd
 
 class KMeans:
 
-    def __init__(self):
+    def __init__(self, n_clusters=2):
         # NOTE: Feel free add any hyperparameters 
         # (with defaults) as you see fit
-        pass
+        self.k = n_clusters
+        self.centroids = None
 
     def fit(self, X):
         """
@@ -21,8 +22,37 @@ class KMeans:
             X (array<m,n>): a matrix of floats with
                 m rows (#samples) and n columns (#features)
         """
-        # TODO: Implement
-        raise NotImplemented()
+        n_samples = X.shape[0]  # of samples
+
+        a = X.to_numpy()
+
+        # Initialize centroids - spread out
+        centroid_indices = np.random.choice(n_samples, 1, replace=False)
+        self.centroids = [a[centroid_indices[0]]]
+        for _ in range(self.k - 1):
+            distances = np.min([euclidean_distance(a, c) for c in self.centroids], axis=0)
+            probabilities = distances / np.sum(distances)
+            new_centroid_index = np.random.choice(n_samples, p=probabilities)
+            self.centroids.append(a[new_centroid_index])
+        self.centroids = np.array(self.centroids)
+
+        # Init assign points to clusters
+        cluster_assignments = cross_euclidean_distance(a, self.centroids).argmin(axis=1)
+
+        # Update centroids
+        while True:
+            # Update centroids
+            for i in range(self.k):
+                self.centroids[i] = np.mean(a[cluster_assignments == i], axis=0)
+
+            # Assign points to clusters
+            new_cluster_assignments = cross_euclidean_distance(a, self.centroids).argmin(axis=1)
+
+            # Check if converged
+            if np.all(new_cluster_assignments == cluster_assignments):
+                break
+            else:
+                cluster_assignments = new_cluster_assignments
 
     def predict(self, X):
         """
@@ -40,8 +70,8 @@ class KMeans:
             there are 3 clusters, then a possible assignment
             could be: array([2, 0, 0, 1, 2, 1, 1, 0, 2, 2])
         """
-        # TODO: Implement 
-        raise NotImplemented()
+        a = X.to_numpy()
+        return np.array(cross_euclidean_distance(a, self.centroids).argmin(axis=1))
 
     def get_centroids(self):
         """
@@ -59,7 +89,7 @@ class KMeans:
             [xm_1, xm_2, ..., xm_n]
         ])
         """
-        pass
+        return self.centroids
 
 
 # --- Some utility functions 
@@ -83,8 +113,16 @@ def euclidean_distance(x, y):
 
 def cross_euclidean_distance(x, y=None):
     """
-    
-    
+    Computes the cross Euclidean distance between two sets of points.
+
+    Args:
+        x, y (array<..., n>): float tensors with pairs of n-dimensional points.
+            If y is None, the function computes the Euclidean distance between
+            points in x against itself.
+
+    Returns:
+        A float array of shape <...> with the pairwise distances between points
+        in x and points in y (or within x if y is None).
     """
     y = x if y is None else y
     assert len(x.shape) >= 2
