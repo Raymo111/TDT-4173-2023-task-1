@@ -55,13 +55,14 @@ class Node:
 
 class DecisionTree:
 
-    def __init__(self, default=None, max_depth=None, min_samples_leaf=1):
+    def __init__(self, default=None, max_depth=None, min_samples_leaf=1, min_samples_split=2):
         # NOTE: Feel free add any hyperparameters 
         # (with defaults) as you see fit
         self.tree: Node | None = None
         self.default = default
         self.max_depth = max_depth
         self.min_samples_leaf = min_samples_leaf
+        self.min_samples_split = min_samples_split
 
     def id3(self, X, y, attributes, depth=0):
         """
@@ -88,6 +89,11 @@ class DecisionTree:
 
         # If attributes is empty or max depth is reached, return the root node with majority class
         if len(attributes) == 0 or (self.max_depth and depth >= self.max_depth or len(X) < self.min_samples_leaf):
+            tree.value = y.value_counts().idxmax()
+            return tree
+
+        # Check if enough samples to split
+        if len(X) < self.min_samples_split:
             tree.value = y.value_counts().idxmax()
             return tree
 
