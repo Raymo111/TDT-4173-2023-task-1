@@ -40,8 +40,13 @@ The decision tree algorithm assumes that the data can be split into categories b
 
 ### Second problem challenges
 
-In the second problem, the validation and test sets contain attribute combinations not present in the training data. How does this problem relate to the algorithm’s inductive bias?
+In the second problem, the validation and test sets contain attribute combinations not present in the training data.
+
+- How does this problem relate to the algorithm’s inductive bias?
 
 #### Modifications
 
-I added hyperparameters but they didn't seem to fix the problem. The highest accuracy I can get is around 62%.
+- I added hyperparameters but they didn't seem to fix the problem. The highest accuracy I can get is around 62%.
+
+## Diagrams
+- Do I need any diagrams for DT?
