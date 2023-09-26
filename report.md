@@ -40,13 +40,8 @@ The decision tree algorithm assumes that the data can be split into categories b
 
 ### Second problem challenges
 
-In the second problem, the validation and test sets contain attribute combinations not present in the training data.
-
-- How does this problem relate to the algorithm’s inductive bias?
+In the second problem, the validation and test sets contain attribute combinations not present in the training data. This was due to the Birth Month attribute splitting the data too irrelevantly, negatively impacting the accuracy.
 
 #### Modifications
 
-- I added hyperparameters but they didn't seem to fix the problem. The highest accuracy I can get is around 62%.
-
-## Diagrams
-- Do I need any diagrams for DT?
+I preprocessed the data by removing the Birth Month attribute, which was not really relevant to the final result.
